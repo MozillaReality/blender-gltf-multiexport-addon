@@ -140,11 +140,11 @@ function setupDragnDrop() {
         reader.onload = function (event) {
           basisLoader._createTexture( event.target.result ).then( tex => {
             var width, height;
-            if (img.width > img.height) {
+            if (tex.image.width > tex.image.height) {
               plane.scale.x = 1;
-              plane.scale.y = img.height / img.width;
+              plane.scale.y = tex.image.height / tex.image.width;
             } else {
-              plane.scale.x = img.width / img.height;
+              plane.scale.x = tex.image.width / tex.image.height;
               plane.scale.y = 1;
             }
 
