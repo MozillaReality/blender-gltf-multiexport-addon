@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Texture Viewer</title>
+  <script src="three.min.js"></script>
+  <script src="BasisTextureLoader.js"></script>
+<style type="text/css">
+body{
+  font-family: sans-serif;
+  background-color: #222;
+  margin: 0;
+  overflow: hidden;
+}
+</style>
+</head>
+<body onload="init()">
+<canvas id="can"></canvas>
+
+<script type="text/javascript">
+
+var canvas = document.getElementById('can');
+var scene, camera, renderer, plane, basisLoader;
+var keys = {};
+
+function init() {
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(50, 1, 0.1, 10);
+  camera.position.set(0, 0, 1);
+  renderer = new THREE.WebGLRenderer({canvas: canvas});
+  resize();
+
+  basisLoader = new THREE.BasisTextureLoader();
+  basisLoader.setTranscoderPath('./');
+  basisLoader.detectSupport(renderer);
+
+  var geometry = new THREE.PlaneBufferGeometry(1, 1);
+  var material = new THREE.MeshBasicMaterial({color: 0xffffff});
+  plane = new THREE.Mesh(geometry, material);
+  scene.add(plane);
+  renderer.setAnimationLoop(renderLoop);
+
+  window.addEventListener('resize', resize);
+  document.body.addEventListener('keydown', onKeyDown);
+  document.body.addEventListener('keyup', onKeyUp);
+  setupDragnDrop();
+}
+
+function renderLoop(t){
+  renderer.render(scene, camera);
+
+  // cursor keys
+  if (keys[39]) {
+    camera.position.x -= 0.01;
+    if (camera.position.x < -1) camera.position.x = -1;
+  }
+  if (keys[37]) {
+    camera.position.x += 0.01;
+    if (camera.position.x > 1) camera.position.x = 1;
+  }
+
+  if (keys[40]) {
+    camera.position.y += 0.01;
+    if (camera.position.y > 1) camera.position.y = 1;
+  }
+  if (keys[38]) {
+    camera.position.y -= 0.01;
+    if (camera.position.y < -1) camera.position.y = -1;
+  }
+
+  // 0 reset zoom
+  if (keys[48]) {
+    camera.position.set(0, 0, 1);
+  }
+
+  // + -`
+  if (keys[171]) {
+    camera.position.z -= 0.1;
+    if (camera.position.z < 0.1) camera.position.z = 0.1;
+  }
+  if (keys[173]) {
+    camera.position.z += 0.1;
+    if (camera.position.z > 10) camera.position.z = 10;
+  }
+}
+
+function resize(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  camera.aspect = canvas.width / canvas.height;
+  camera.updateProjectionMatrix();
+  renderer.setSize(canvas.width, canvas.height);
+}
+
+function setupDragnDrop() {
+  var dropArea = document.body;
+
+  dropArea.addEventListener('dragover', function (event) {
+    event.stopPropagation();
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+  }, false);
+
+  dropArea.addEventListener('drop', function (event) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    const files = event.dataTransfer.files;
+    for (var i = 0; i < 1; i++) { // files.length
+      const file = files[i];
+
+      const extension = file.name.split('.').pop();
+
+      if (file.type.match(/image.*/)) {
+        let reader = new FileReader();
+        reader.onload = function (event) {
+          var img = new Image();
+          img.src = event.target.result;
+
+          var width, height;
+          if (img.width > img.height) {
+            plane.scale.x = 1;
+            plane.scale.y = img.height / img.width;
+          } else {
+            plane.scale.x = img.width / img.height;
+            plane.scale.y = 1;
+          }
+
+          let tex = new THREE.Texture();
+          tex.image = img;
+          img.onload = function () {
+            tex.needsUpdate = true;
+            plane.material.map = tex;
+            plane.material.needsUpdate = true;
+          };
+        };
+        reader.readAsDataURL(file);
+      } else if (extension == 'basis') {
+        let reader = new FileReader();
+        reader.onload = function (event) {
+          basisLoader._createTexture( event.target.result ).then( tex => {
+            var width, height;
+            if (img.width > img.height) {
+              plane.scale.x = 1;
+              plane.scale.y = img.height / img.width;
+            } else {
+              plane.scale.x = img.width / img.height;
+              plane.scale.y = 1;
+            }
+
+            tex.needsUpdate = true;
+            plane.material.map = tex;
+            plane.material.needsUpdate = true;
+          }).catch( err => { console.warn(err);} );
+        }
+        reader.readAsArrayBuffer(file);
+
+      }
+
+    }
+  }, false);
+};
+
+function onKeyDown(ev){
+  keys[ev.keyCode] = true;
+}
+function onKeyUp(ev){
+  keys[ev.keyCode] = false;
+}
+
+</script>
+
+</body>
+</html>

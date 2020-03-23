@@ -1,6 +1,8 @@
-# webxr-tools
+# WebXR Tools
 
 Small tools that may be useful for WebXR and WebGL development
+
+
 
 ## Blender scripts
 
@@ -29,5 +31,13 @@ Allows to apply a specific color to the selected vertices.
 
 
 
-## Basis viewer
+## Texture viewer
 
+Basic texture viewer. Drag and drop an image file to inspect it. Supports .Basis textures
+
+1. Start a webserver on the folder and open localhost in a browser.
+2. Drag and drop a image or .basis file on the page (WIP: maybe you have to do it twice)
+
+Controls:
+* `+` and `-` to **zoom**
+* Use cursor keys to **pan**
