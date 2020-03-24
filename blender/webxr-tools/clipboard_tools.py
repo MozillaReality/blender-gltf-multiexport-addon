@@ -7,10 +7,12 @@ class ClipboardToolsProps(bpy.types.PropertyGroup):
   scale: bpy.props.FloatProperty(name="Scale", default = 1.0)
 
 
-class CopyPositionToClipboard(bpy.types.Operator):
-  """Copies selected object's position to clipboard (in OpenGL coords)"""
-  bl_idname = "object.copy_position_to_clipboard"
-  bl_label = "Copy Position to Clipboard"
+class CopyPosRotScaleToClipboard(bpy.types.Operator):
+  """Copies selected object's position, rotation or scale to clipboard (in OpenGL coords)"""
+  bl_idname = "object.copy_posrotscale_to_clipboard"
+  bl_label = "Copy Position, Rotation or Scale to Clipboard"
+
+  mode: bpy.props.StringProperty(default="position")
 
   @classmethod
   def poll(cls, context):
@@ -22,77 +24,27 @@ class CopyPositionToClipboard(bpy.types.Operator):
     scale = props.scale
 
     obj = context.active_object
-    x = round(obj.location.x * scale, decimals)
-    y = round(obj.location.y * scale, decimals)
-    z = round(obj.location.z * scale, decimals)
+    if self.mode == 'position':
+      x = round(obj.location.x * scale, decimals)
+      z = -round(obj.location.y * scale, decimals)
+      y = round(obj.location.z * scale, decimals)
+    elif self.mode == 'rotation':
+      x = round(obj.rotation_euler.x, decimals)
+      z = round(obj.rotation_euler.y, decimals)
+      y = round(obj.rotation_euler.z, decimals)
+    elif self.mode == 'scale':
+      x = round(obj.scale.x * scale, decimals)
+      z = round(obj.scale.y * scale, decimals)
+      y = round(obj.scale.z * scale, decimals)
 
     if decimals == 0:
       x = int(x)
       y = int(y)
       z = int(z)
 
-    clipdata = str(x) + ', ' + str(z) + ', ' + str(-y)
+    clipdata = str(x) + ', ' + str(y) + ', ' + str(z)
     bpy.context.window_manager.clipboard = clipdata
     return {'FINISHED'}
-
-
-class CopyRotationToClipboard(bpy.types.Operator):
-  """Copies selected object's rotation to clipboard (in OpenGL coords)"""
-  bl_idname = "object.copy_rotation_to_clipboard"
-  bl_label = "Copy Rotation to Clipboard"
-
-  @classmethod
-  def poll(cls, context):
-    return context.active_object is not None
-
-  def execute(self, context):
-    props = context.scene.clipboard_tools_props
-    decimals = props.decimals
-
-    obj = context.active_object
-    x = round(obj.rotation_euler.x, decimals)
-    y = round(obj.rotation_euler.y, decimals)
-    z = round(obj.rotation_euler.z, decimals)
-
-    if decimals == 0:
-      x = int(x)
-      y = int(y)
-      z = int(z)
-
-    clipdata = str(x) + ', ' + str(z) + ', ' + str(-y)
-    bpy.context.window_manager.clipboard = clipdata
-    return {'FINISHED'}
-
-
-class CopyScaleToClipboard(bpy.types.Operator):
-  """Copies selected object's scale to clipboard (in OpenGL coords)"""
-  bl_idname = "object.copy_scale_to_clipboard"
-  bl_label = "Copy Scale to Clipboard"
-
-  @classmethod
-  def poll(cls, context):
-    return context.active_object is not None
-
-  def execute(self, context):
-    props = context.scene.clipboard_tools_props
-    decimals = props.decimals
-    scale = props.scale
-
-    obj = context.active_object
-    x = round(obj.scale.x * scale, decimals)
-    y = round(obj.scale.y * scale, decimals)
-    z = round(obj.scale.z * scale, decimals)
-
-    if decimals == 0:
-      x = int(x)
-      y = int(y)
-      z = int(z)
-
-    clipdata = str(x) + ', ' + str(z) + ', ' + str(y)
-    bpy.context.window_manager.clipboard = clipdata
-    return {'FINISHED'}
-
-
 
 class CopyGeometryToClipboard(bpy.types.Operator):
   """Copies selected object's geometry (verts + faces) to clipboard (in OpenGL coords)"""
@@ -161,11 +113,14 @@ class ClipboardToolsPanel(bpy.types.Panel):
         row = layout.separator()
 
         row = layout.row()
-        row.operator("object.copy_position_to_clipboard", text = "Copy Position", icon = "COPYDOWN")
+        pref = row.operator("object.copy_posrotscale_to_clipboard", text = "Copy Position", icon = "COPYDOWN")
+        pref.mode = 'position'
         row = layout.row()
-        row.operator("object.copy_rotation_to_clipboard", text = "Copy Rotation", icon = "COPYDOWN")
+        pref = row.operator("object.copy_posrotscale_to_clipboard", text = "Copy Rotation", icon = "COPYDOWN")
+        pref.mode = 'rotation'
         row = layout.row()
-        row.operator("object.copy_scale_to_clipboard", text = "Copy Scale", icon = "COPYDOWN")
+        pref = row.operator("object.copy_posrotscale_to_clipboard", text = "Copy Scale", icon = "COPYDOWN")
+        pref.mode = 'scale'
         row = layout.row()
         row.operator("object.copy_geometry_to_clipboard", text = "Copy Geometry", icon = "COPYDOWN")
 
@@ -173,18 +128,14 @@ class ClipboardToolsPanel(bpy.types.Panel):
 def register():
   bpy.utils.register_class(ClipboardToolsProps)
   bpy.types.Scene.clipboard_tools_props = bpy.props.PointerProperty(type=ClipboardToolsProps)
-  bpy.utils.register_class(CopyPositionToClipboard)
-  bpy.utils.register_class(CopyRotationToClipboard)
-  bpy.utils.register_class(CopyScaleToClipboard)
+  bpy.utils.register_class(CopyPosRotScaleToClipboard)
   bpy.utils.register_class(CopyGeometryToClipboard)
   bpy.utils.register_class(ClipboardToolsPanel)
 
 def unregister():
   bpy.utils.unregister_class(ClipboardToolsPanel)
   bpy.utils.unregister_class(CopyGeometryToClipboard)
-  bpy.utils.unregister_class(CopyScaleToClipboard)
-  bpy.utils.unregister_class(CopyRotationToClipboard)
-  bpy.utils.unregister_class(CopyPositionToClipboard)
+  bpy.utils.unregister_class(CopyPosRotScaleToClipboard)
   del bpy.types.Scene.clipboard_tools_props
   bpy.utils.unregister_class(ClipboardToolsProps)
 

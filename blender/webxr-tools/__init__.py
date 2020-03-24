@@ -3,7 +3,7 @@ bl_info = {
     "author": "Diego F. Goberna",
     "version": (1, 0),
     "blender": (2, 80, 0),
-    "location": "View3D > Tools",
+    "location": "View3D > Tool sidebar > Clipboard Tools",
     "description": "Set of tools to help with WebXR & WebGL development",
     "warning": "",
     "wiki_url": "",
