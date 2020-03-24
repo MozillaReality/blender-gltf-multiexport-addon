@@ -12,7 +12,7 @@ Add-on with a set of operators and features:
 
 * Clipboard tools
 
-![screenshot](doc/clipboardtools.png)
+![screenshot](./doc/clipboardtools.png)
 
 Copies to the clipboard the position, rotation or scale of the selected object
 ```js
