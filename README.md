@@ -7,8 +7,6 @@ Small Blender Add-ons that may be useful for WebXR and WebGL development
 
 ![screenshot](./doc/clipboardtools.png)
 
-![screenshot](./doc/clipboardtools.png)
-
 Copies to the clipboard the position, rotation or scale of the selected object
 ```js
 // Example output:
