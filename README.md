@@ -1,16 +1,11 @@
-# WebXR Tools
+# Blender Add-ons for WebXR
 
-Small tools that may be useful for WebXR and WebGL development
+Small Blender Add-ons that may be useful for WebXR and WebGL development
 
 
+## Clipboard tools
 
-## Blender scripts
-
-### webxr-tools
-
-Add-on with a set of operators and features:
-
-* Clipboard tools
+![screenshot](./doc/clipboardtools.png)
 
 ![screenshot](./doc/clipboardtools.png)
 
@@ -29,19 +24,4 @@ var Plane = {
 }
 ```
 
-### vertex_color_to_selection
 
-Allows to apply a specific color to the selected vertices.
-
-
-
-## Texture viewer
-
-Basic texture viewer. Drag and drop an image file to inspect it. Supports .Basis textures
-
-1. Start a webserver on the folder and open localhost in a browser.
-2. Drag and drop a image or .basis file on the page (WIP: maybe you have to do it twice)
-
-Controls:
-* `+` and `-` to **zoom**
-* Use cursor keys to **pan**
