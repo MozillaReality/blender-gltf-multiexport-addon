@@ -2,6 +2,12 @@
 
 Small Blender Add-ons that may be useful for WebXR and WebGL development
 
+## Instalation
+
+1. Download `webxr-addons.zip`
+2. In Blender, go to Edit > Preferences > Add-ons and click on `Install...`. Select zip file.
+3. Activate the checkbox next to the *WebXR Tools* Add-on
+
 
 ## Clipboard tools
 
