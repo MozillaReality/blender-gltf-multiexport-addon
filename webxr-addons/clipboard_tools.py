@@ -1,5 +1,16 @@
 import bpy
 
+bl_info = {
+    "name": "Copy to Clipboard",
+    "author": "Diego F. Goberna",
+    "version": (1, 0),
+    "blender": (2, 80, 0),
+    "location": "View3D > Tool sidebar > Clipboard Tools",
+    "description": "Copy position, rotation, scale or geometry to clipboard",
+    "warning": "",
+    'url': 'https://github.com/feiss/blender-addons-for-webxr',
+    "category": "Import-Export"
+}
 
 
 class ClipboardToolsProps(bpy.types.PropertyGroup):
@@ -91,7 +102,7 @@ class CopyGeometryToClipboard(bpy.types.Operator):
 
 class ClipboardToolsPanel(bpy.types.Panel):
     """Clipboard tools panel"""
-    bl_label = "WebXR - Clipboard Tools"
+    bl_label = "Clipboard Tools"
     bl_idname = "OBJECT_PT_clipboardtools"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
