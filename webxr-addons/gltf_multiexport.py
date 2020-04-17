@@ -17,13 +17,15 @@ bl_info = {
 bpy.types.Object.gltf_export_do = bpy.props.BoolProperty(
         name='Export',
         description='Export object?',
-        default=True
+        default=True,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_basename = bpy.props.StringProperty(
         name='Alternative file name',
         description='Base name for the exported file, without extension. If empty, object name will be used',
         default='',
+        options= set()
     )
 
 
@@ -42,7 +44,8 @@ bpy.types.Object.gltf_export_format = bpy.props.EnumProperty(
             'Output format and embedding options. Binary is most efficient, '
             'but JSON (embedded or separate) may be easier to edit later'
         ),
-        default='GLB'
+        default='GLB',
+        options= set()
     )
 
 bpy.types.Object.gltf_export_image_format = bpy.props.EnumProperty(
@@ -58,31 +61,36 @@ bpy.types.Object.gltf_export_image_format = bpy.props.EnumProperty(
             'Output format for images. PNG is lossless and generally preferred, but JPEG might be preferable for web '
             'applications due to the smaller file size'
         ),
-        default='NAME'
+        default='NAME',
+        options= set()
     )
 
 bpy.types.Object.gltf_export_texture_dir = bpy.props.StringProperty(
         name='Textures',
         description='Folder to place texture files in. Relative to the .gltf file',
         default='',
+        options= set()
     )
 
 bpy.types.Object.gltf_export_texcoords = bpy.props.BoolProperty(
         name='UVs',
         description='Export UVs (texture coordinates) with meshes',
-        default=True
+        default=True,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_normals = bpy.props.BoolProperty(
         name='Normals',
         description='Export vertex normals with meshes',
-        default=True
+        default=True,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_draco_mesh_compression_enable = bpy.props.BoolProperty(
         name='Draco mesh compression',
         description='Compress mesh using Draco',
-        default=False
+        default=False,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_draco_mesh_compression_level = bpy.props.IntProperty(
@@ -90,7 +98,8 @@ bpy.types.Object.gltf_export_draco_mesh_compression_level = bpy.props.IntPropert
         description='Compression level (0 = most speed, 6 = most compression, higher values currently not supported)',
         default=6,
         min=0,
-        max=6
+        max=6,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_draco_position_quantization = bpy.props.IntProperty(
@@ -98,7 +107,8 @@ bpy.types.Object.gltf_export_draco_position_quantization = bpy.props.IntProperty
         description='Quantization bits for position values (0 = no quantization)',
         default=14,
         min=0,
-        max=30
+        max=30,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_draco_normal_quantization = bpy.props.IntProperty(
@@ -106,7 +116,8 @@ bpy.types.Object.gltf_export_draco_normal_quantization = bpy.props.IntProperty(
         description='Quantization bits for normal values (0 = no quantization)',
         default=10,
         min=0,
-        max=30
+        max=30,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_draco_texcoord_quantization = bpy.props.IntProperty(
@@ -114,7 +125,8 @@ bpy.types.Object.gltf_export_draco_texcoord_quantization = bpy.props.IntProperty
         description='Quantization bits for texture coordinate values (0 = no quantization)',
         default=12,
         min=0,
-        max=30
+        max=30,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_draco_generic_quantization = bpy.props.IntProperty(
@@ -122,56 +134,65 @@ bpy.types.Object.gltf_export_draco_generic_quantization = bpy.props.IntProperty(
         description='Quantization bits for generic coordinate values like weights or joints (0 = no quantization)',
         default=12,
         min=0,
-        max=30
+        max=30,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_tangents = bpy.props.BoolProperty(
         name='Tangents',
         description='Export vertex tangents with meshes',
-        default=False
+        default=False,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_materials = bpy.props.BoolProperty(
         name='Materials',
         description='Export materials',
-        default=True
+        default=True,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_colors = bpy.props.BoolProperty(
         name='Vertex Colors',
         description='Export vertex colors with meshes',
-        default=True
+        default=True,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_extras = bpy.props.BoolProperty(
         name='Custom Properties',
         description='Export custom properties as glTF extras',
-        default=False
+        default=False,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_yup = bpy.props.BoolProperty(
         name='+Y Up',
         description='Export using glTF convention, +Y up',
-        default=True
+        default=True,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_apply = bpy.props.BoolProperty(
         name='Apply Modifiers',
         description='Apply modifiers (excluding Armatures) to mesh objects -'
                     'WARNING: prevents exporting shape keys',
-        default=False
+        default=False,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_animations = bpy.props.BoolProperty(
         name='Animations',
         description='Exports active actions and NLA tracks as glTF animations',
-        default=True
+        default=True,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_frame_range = bpy.props.BoolProperty(
         name='Limit to Playback Range',
         description='Clips animations to selected playback range',
-        default=True
+        default=True,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_frame_step = bpy.props.IntProperty(
@@ -179,68 +200,79 @@ bpy.types.Object.gltf_export_frame_step = bpy.props.IntProperty(
         description='How often to evaluate animated values (in frames)',
         default=1,
         min=1,
-        max=120
+        max=120,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_force_sampling = bpy.props.BoolProperty(
         name='Always Sample Animations',
         description='Apply sampling to all animations',
-        default=True
+        default=True,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_nla_strips = bpy.props.BoolProperty(
         name='NLA Strips',
         description='Export NLA Strip animations',
-        default=True
+        default=True,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_def_bones = bpy.props.BoolProperty(
         name='Export Deformation bones only',
         description='Export Deformation bones only (and needed bones for hierarchy)',
-        default=False
+        default=False,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_current_frame = bpy.props.BoolProperty(
         name='Use Current Frame',
         description='Export the scene in the current animation frame',
-        default=False
+        default=False,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_skins = bpy.props.BoolProperty(
         name='Skinning',
         description='Export skinning (armature) data',
-        default=True
+        default=True,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_all_influences = bpy.props.BoolProperty(
         name='Include All Bone Influences',
         description='Allow >4 joint vertex influences. Models may appear incorrectly in many viewers',
-        default=False
+        default=False,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_morph = bpy.props.BoolProperty(
         name='Shape Keys',
         description='Export shape keys (morph targets)',
-        default=True
+        default=True,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_morph_normal = bpy.props.BoolProperty(
         name='Shape Key Normals',
         description='Export vertex normals with shape keys (morph targets)',
-        default=True
+        default=True,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_morph_tangent = bpy.props.BoolProperty(
         name='Shape Key Tangents',
         description='Export vertex tangents with shape keys (morph targets)',
-        default=False
+        default=False,
+        options= set()
     )
 
 bpy.types.Object.gltf_export_displacement = bpy.props.BoolProperty(
         name='Displacement Textures (EXPERIMENTAL)',
         description='EXPERIMENTAL: Export displacement textures. '
                     'Uses incomplete "KHR_materials_displacement" glTF extension',
-        default=False
+        default=False,
+        options= set()
     )
 
 
@@ -254,7 +286,7 @@ bpy.types.Object.gltf_export_displacement = bpy.props.BoolProperty(
 
 class GLTFMULTI_PT_MultiExportPanel(bpy.types.Panel):
     """Creates a MultiExport Panel in the Object properties window"""
-    bl_label = "glTF Export Settings"
+    bl_label = "glTF MultiExport"
     bl_idname = "GLTFMULTI_PT_gltfmultiexport"
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
@@ -270,6 +302,17 @@ class GLTFMULTI_PT_MultiExportPanel(bpy.types.Panel):
 
         obj = context.object
 
+        box = layout.box()
+        box.label(text = 'Global Settings', icon='WORLD')
+        box.prop(context.scene.gltfmultisettings, "output_path", icon="FILE_FOLDER")
+        box.prop(context.scene.gltfmultisettings, "copyright")
+        #col = layout.col
+        spl = box.row()
+        spl.operator('export_scene.gltf_single', text='Export Object')
+        spl.operator('export_scene.gltf_multi', text='Export All Objects')
+        layout.separator()
+
+        layout.label(text = 'Object Settings', icon='OBJECT_DATA')
         layout.prop(obj, "gltf_export_do")
         layout.prop(obj, "gltf_export_basename", icon='FILE_BLANK')
         layout.separator()
@@ -414,56 +457,19 @@ def messageBox(message = "", title = "glTF MultiExport", icon = 'INFO'):
     bpy.context.window_manager.popup_menu(draw, title = title, icon = icon)
 
 
-'''
-bpy.ops.export_scene.gltf(export_format='GLB'
-ui_tab='GENERAL'
-export_copyright=""
-export_image_format='NAME'
-export_texture_dir=""
-export_texcoords=True
-export_normals=True
-export_draco_mesh_compression_enable=False
-export_draco_mesh_compression_level=6
-export_draco_position_quantization=14
-export_draco_normal_quantization=10
-export_draco_texcoord_quantization=12
-export_draco_generic_quantization=12
-export_tangents=False
-export_materials=True
-export_colors=True
-export_cameras=False
-export_selected=False
-export_extras=False
-export_yup=True
-export_apply=False
-export_animations=True
-export_frame_range=True
-export_frame_step=1
-export_force_sampling=True
-export_nla_strips=True
-export_def_bones=False
-export_current_frame=False
-export_skins=True
-export_all_influences=False
-export_morph=True
-export_morph_normal=True
-export_morph_tangent=False
-export_lights=False
-export_displacement=False
-will_save_settings=False
-filepath=""
-check_existing=True
-'''
-def export(context):
+def export(context, one = False):
     count = 0
     files = []
     copyright = context.scene.gltfmultisettings.copyright
     output_path = context.scene.gltfmultisettings.output_path.strip()
     output_path += '' if output_path[-1] == path.sep else path.sep
-    for obj in bpy.data.objects:
-        bpy.ops.object.select_all(action='DESELECT')
+
+    object_list = [context.active_object] if one else bpy.data.objects
+
+    for obj in object_list:
+        if not one: bpy.ops.object.select_all(action='DESELECT')
         if not obj.gltf_export_do: continue
-        obj.select_set(True)
+        if not one: obj.select_set(True)
         filename = obj.gltf_export_basename.strip()
         if not filename: filename = obj.name.strip()
         filename = bpy.path.clean_name(filename)
@@ -524,7 +530,18 @@ class GLTFMultiExport(bpy.types.Operator):
         res = export(context)
         return res
 
+class GLTFMultiExportSingle(bpy.types.Operator):
+    """Exports current object to a glTF with their own settings"""
+    bl_idname = "export_scene.gltf_single"
+    bl_label = "glTF MultiExport one object"
 
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def execute(self, context):
+        res = export(context, True)
+        return res
 
 
 
@@ -569,9 +586,10 @@ def register():
     bpy.utils.register_class(GLTFMULTI_PT_MultiExportAnimationSubSubpanel)
     bpy.utils.register_class(GLTFMULTI_PT_MultiExportAnimationShapekeysSubpanel)
     bpy.utils.register_class(GLTFMULTI_PT_MultiExportAnimationSkinningSubpanel)
-    bpy.utils.register_class(GLTFMULTI_PT_MultiExportGlobal)
+    #bpy.utils.register_class(GLTFMULTI_PT_MultiExportGlobal)
 
     bpy.utils.register_class(GLTFMultiExport)
+    bpy.utils.register_class(GLTFMultiExportSingle)
 
 #    bpy.app.handlers.depsgraph_update_post.append(gltfmulti_scene_update)
 
@@ -585,9 +603,10 @@ def unregister():
     bpy.utils.unregister_class(GLTFMULTI_PT_MultiExportAnimationSubSubpanel)
     bpy.utils.unregister_class(GLTFMULTI_PT_MultiExportAnimationShapekeysSubpanel)
     bpy.utils.unregister_class(GLTFMULTI_PT_MultiExportAnimationSkinningSubpanel)
-    bpy.utils.unregister_class(GLTFMULTI_PT_MultiExportGlobal)
+    #bpy.utils.unregister_class(GLTFMULTI_PT_MultiExportGlobal)
 
     bpy.utils.unregister_class(GLTFMultiExport)
+    bpy.utils.unregister_class(GLTFMultiExportSingle)
 
 #    bpy.app.handlers.depsgraph_update_post.remove(gltfmulti_scene_update)
 
