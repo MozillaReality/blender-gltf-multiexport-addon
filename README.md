@@ -17,10 +17,11 @@ in the scene in independent glTF files with a single button (or shortcut).
 
 
 ## Clipboard tools
+Copies to the clipboard the position, rotation or scale of the selected object
 
 ![screenshot](./doc/clipboardtools.png)
 
-Copies to the clipboard the position, rotation or scale of the selected object
+
 ```js
 // Example output:
 1, 4.3, 24
