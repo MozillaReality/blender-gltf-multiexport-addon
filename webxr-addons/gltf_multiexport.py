@@ -16,7 +16,7 @@ bl_info = {
 
 bpy.types.Object.gltf_export_do = bpy.props.BoolProperty(
         name='Export',
-        description='Export object?',
+        description='Whether export object or not',
         default=True,
         options= set()
     )
@@ -25,6 +25,19 @@ bpy.types.Object.gltf_export_basename = bpy.props.StringProperty(
         name='Alternative file name',
         description='Base name for the exported file, without extension. If empty, object name will be used',
         default='',
+        options= set()
+    )
+
+bpy.types.Object.gltf_export_resetpos = bpy.props.BoolProperty(
+        name='Reset Position',
+        description='Export object in position 0, 0, 0',
+        default=False,
+        options= set()
+    )
+bpy.types.Object.gltf_export_resetrot = bpy.props.BoolProperty(
+        name='Reset Rotation',
+        description='Export object with zero rotation',
+        default=False,
         options= set()
     )
 
@@ -160,7 +173,7 @@ bpy.types.Object.gltf_export_colors = bpy.props.BoolProperty(
     )
 
 bpy.types.Object.gltf_export_extras = bpy.props.BoolProperty(
-        name='Custom Properties',
+        name='Include Custom Properties',
         description='Export custom properties as glTF extras',
         default=False,
         options= set()
@@ -306,32 +319,64 @@ class GLTFMULTI_PT_MultiExportPanel(bpy.types.Panel):
         box.label(text = 'Global Settings', icon='WORLD')
         box.prop(context.scene.gltfmultisettings, "output_path", icon="FILE_FOLDER")
         box.prop(context.scene.gltfmultisettings, "copyright")
-        #col = layout.col
+
         spl = box.row()
         spl.operator('export_scene.gltf_single', text='Export Object')
         spl.operator('export_scene.gltf_multi', text='Export All Objects')
         layout.separator()
+        layout.separator()
 
-        layout.label(text = 'Object Settings', icon='OBJECT_DATA')
+        box = layout.box()
+        box.label(text = 'Object Settings', icon='OBJECT_DATA')
         layout.prop(obj, "gltf_export_do")
         layout.prop(obj, "gltf_export_basename", icon='FILE_BLANK')
-        layout.separator()
         layout.prop(obj, "gltf_export_format")
-        layout.prop(obj, "gltf_export_image_format")
 
         if obj.gltf_export_format == 'GLTF_SEPARATE':
             layout.prop(obj, 'gltf_export_texture_dir', icon='FILE_FOLDER')
 
-        layout.separator()
+
+
+class GLTFMULTI_PT_MultiExportTransformSubpanel(bpy.types.Panel):
+    bl_label = "Transform"
+    bl_idname = "GLTFMULTI_PT_gltfmultiexporttransform"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context = "object"
+    bl_parent_id = "GLTFMULTI_PT_gltfmultiexport"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    def draw(self, context):
+        layout = self.layout
+        layout.use_property_split = True
+
+        obj = context.object
         layout.prop(obj, "gltf_export_yup")
+        layout.prop(obj, "gltf_export_resetpos")
+        layout.prop(obj, "gltf_export_resetrot")
+
+
+
+class GLTFMULTI_PT_MultiExportGeometrySubpanel(bpy.types.Panel):
+    bl_label = "Geometry"
+    bl_idname = "GLTFMULTI_PT_gltfmultiexportgeometry"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context = "object"
+    bl_parent_id = "GLTFMULTI_PT_gltfmultiexport"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    def draw(self, context):
+        layout = self.layout
+        layout.use_property_split = True
+        obj = context.object
         layout.prop(obj, "gltf_export_apply")
-        layout.separator()
         layout.prop(obj, "gltf_export_texcoords")
         layout.prop(obj, "gltf_export_normals")
         layout.prop(obj, "gltf_export_tangents")
-        layout.prop(obj, "gltf_export_materials")
-        layout.separator()
         layout.prop(obj, "gltf_export_colors")
+        layout.prop(obj, "gltf_export_materials")
+        layout.prop(obj, "gltf_export_image_format")
         layout.prop(obj, "gltf_export_extras")
 
 
@@ -341,7 +386,7 @@ class GLTFMULTI_PT_MultiExportDracoSubpanel(bpy.types.Panel):
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "object"
-    bl_parent_id = "GLTFMULTI_PT_gltfmultiexport"
+    bl_parent_id = "GLTFMULTI_PT_gltfmultiexporttransform"
     bl_options = {'DEFAULT_CLOSED'}
 
     def draw_header(self, context):
@@ -470,6 +515,16 @@ def export(context, one = False):
         if not one: bpy.ops.object.select_all(action='DESELECT')
         if not obj.gltf_export_do: continue
         if not one: obj.select_set(True)
+
+        backup_pos = obj.location.copy()
+        backup_rot = obj.rotation_euler.copy() if not obj.rotation_mode == 'QUATERNION' else obj.rotation_quaternion.copy()
+        if obj.gltf_export_resetpos: obj.location.xyz = (0, 0, 0)
+        if obj.gltf_export_resetrot:
+            if obj.rotation_mode == 'QUATERNION':
+                obj.rotation_quaternion = (1, 0, 0, 0)
+            else:
+                obj.rotation_euler = (0, 0, 0)
+
         filename = obj.gltf_export_basename.strip()
         if not filename: filename = obj.name.strip()
         filename = bpy.path.clean_name(filename)
@@ -510,6 +565,14 @@ def export(context, one = False):
             export_morph_tangent= obj.gltf_export_morph_tangent,
             export_displacement= obj.gltf_export_displacement
         )
+
+        # restore pos & rot
+        if obj.gltf_export_resetpos: obj.location = backup_pos
+        if obj.gltf_export_resetrot:
+            if obj.rotation_mode == 'QUATERNION':
+                obj.rotation_quaternion = backup_rot
+            else:
+                obj.rotation_euler = backup_rot
 
         count += 1
         files.append(filename)
@@ -581,6 +644,8 @@ def register():
     bpy.types.Scene.gltfmultisettings = bpy.props.PointerProperty(type=GLTF_MultiProps)
 
     bpy.utils.register_class(GLTFMULTI_PT_MultiExportPanel)
+    bpy.utils.register_class(GLTFMULTI_PT_MultiExportTransformSubpanel)
+    bpy.utils.register_class(GLTFMULTI_PT_MultiExportGeometrySubpanel)
     bpy.utils.register_class(GLTFMULTI_PT_MultiExportDracoSubpanel)
     bpy.utils.register_class(GLTFMULTI_PT_MultiExportAnimationSubpanel)
     bpy.utils.register_class(GLTFMULTI_PT_MultiExportAnimationSubSubpanel)
@@ -598,6 +663,8 @@ def unregister():
     del bpy.types.Scene.gltfmultisettings
 
     bpy.utils.unregister_class(GLTFMULTI_PT_MultiExportPanel)
+    bpy.utils.unregister_class(GLTFMULTI_PT_MultiExportTransformSubpanel)
+    bpy.utils.unregister_class(GLTFMULTI_PT_MultiExportGeometrySubpanel)
     bpy.utils.unregister_class(GLTFMULTI_PT_MultiExportDracoSubpanel)
     bpy.utils.unregister_class(GLTFMULTI_PT_MultiExportAnimationSubpanel)
     bpy.utils.unregister_class(GLTFMULTI_PT_MultiExportAnimationSubSubpanel)
