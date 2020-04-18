@@ -337,13 +337,19 @@ class GLTFMULTI_PT_MultiExportPanel(bpy.types.Panel):
         box = layout.box()
         box.label(text = 'Object Settings', icon='OBJECT_DATA')
         layout.prop(obj, "gltf_export_do")
-        layout.prop(obj, "gltf_export_basename", icon='FILE_BLANK')
-        layout.prop(obj, "gltf_export_format")
-
-        if obj.gltf_export_format == 'GLTF_SEPARATE':
-            layout.prop(obj, 'gltf_export_texture_dir', icon='FILE_FOLDER')
-
         layout.prop(obj, 'gltf_export_useobjectsettings')
+
+        if obj.gltf_export_useobjectsettings is None:
+            layout.prop(obj, "gltf_export_basename", icon='FILE_BLANK')
+            layout.prop(obj, "gltf_export_format")
+
+            if obj.gltf_export_format == 'GLTF_SEPARATE':
+                layout.prop(obj, 'gltf_export_texture_dir', icon='FILE_FOLDER')
+        else:
+            layout.label(text = 'This object will be exported in the same file as "' +
+                obj.gltf_export_useobjectsettings.name +
+                '", using its settings.')
+
 
 
 class GLTFMULTI_PT_MultiExportTransformSubpanel(bpy.types.Panel):
@@ -354,6 +360,10 @@ class GLTFMULTI_PT_MultiExportTransformSubpanel(bpy.types.Panel):
     bl_context = "object"
     bl_parent_id = "GLTFMULTI_PT_gltfmultiexport"
     bl_options = {'DEFAULT_CLOSED'}
+
+    @classmethod
+    def poll(cls, context):
+        return context.object.gltf_export_useobjectsettings is None
 
     def draw(self, context):
         layout = self.layout
@@ -375,6 +385,10 @@ class GLTFMULTI_PT_MultiExportGeometrySubpanel(bpy.types.Panel):
     bl_context = "object"
     bl_parent_id = "GLTFMULTI_PT_gltfmultiexport"
     bl_options = {'DEFAULT_CLOSED'}
+
+    @classmethod
+    def poll(cls, context):
+        return context.object.gltf_export_useobjectsettings is None
 
     def draw(self, context):
         layout = self.layout
@@ -427,6 +441,10 @@ class GLTFMULTI_PT_MultiExportAnimationSubpanel(bpy.types.Panel):
     bl_context = "object"
     bl_parent_id = "GLTFMULTI_PT_gltfmultiexport"
     bl_options = {'DEFAULT_CLOSED'}
+
+    @classmethod
+    def poll(cls, context):
+        return context.object.gltf_export_useobjectsettings is None
 
     def draw(self, context):
         layout = self.layout
