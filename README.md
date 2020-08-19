@@ -4,6 +4,8 @@
 Allows to define glTF export settings **per object**, and batch export all objects
 in the scene in independent glTF files with a single button (or shortcut).
 
+video: https://twitter.com/feiss/status/1252295484120748033
+
 ![screenshot](gltfmultiexport.png)
 
 ## Installation
