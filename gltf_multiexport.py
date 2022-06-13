@@ -71,7 +71,7 @@ bpy.types.Object.gltf_export_format = bpy.props.EnumProperty(
 
 bpy.types.Object.gltf_export_image_format = bpy.props.EnumProperty(
     name='Images',
-    items=(('NAME', 'Automatic',
+    items=(('AUTO', 'Automatic',
             'Determine the image format from the blender image name'),
             ('JPEG', 'JPEG Format (.jpg)',
             'Encode and save textures as .jpg files. Be aware of a possible loss in quality'),
@@ -82,7 +82,7 @@ bpy.types.Object.gltf_export_image_format = bpy.props.EnumProperty(
         'Output format for images. PNG is lossless and generally preferred, but JPEG might be preferable for web '
         'applications due to the smaller file size'
     ),
-    default='NAME',
+    default='AUTO',
     options= set()
 )
 
@@ -166,10 +166,17 @@ bpy.types.Object.gltf_export_tangents = bpy.props.BoolProperty(
     options= set()
 )
 
-bpy.types.Object.gltf_export_materials = bpy.props.BoolProperty(
+bpy.types.Object.gltf_export_materials = bpy.props.EnumProperty(
     name='Materials',
+    items=(('EXPORT', 'Export',
+            'Export all materials used by included objects.'),
+           ('PLACEHOLDER', 'Placeholder',
+            'Do not export materials, but write multiple primitive groups per mesh, keeping material slot information.. '
+            ),
+           ('GLTF_SEPARATE', 'No export)',
+            'Do not export materials, and combine mesh primitive groups, losing material slot information.')),
     description='Export materials',
-    default=True,
+    default='EXPORT',
     options= set()
 )
 
@@ -536,7 +543,7 @@ def exportSelection(context, obj, path):
     bpy.ops.export_scene.gltf(
         export_format = obj.gltf_export_format,
         export_copyright = copyright,
-        export_selected = True,
+        use_selection = True,
         filepath= path,
 
         export_image_format = obj.gltf_export_image_format,
@@ -762,4 +769,3 @@ def unregister():
 
 if __name__ == "__main__":
     register()
-
